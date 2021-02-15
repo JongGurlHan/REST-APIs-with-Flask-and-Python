@@ -16,13 +16,13 @@ stores = [
 
 @app.route('/')
 def home():
-    return render_template('template/index.html')
+    return render_template('template\index.html')
  
 
 #POST - used to receive data
 #GET - used to send data back only
 
-#1. Post /store date: {name:} : Create a new store with a given name
+#1. Post /store data: {name:} : Create a new store with a given name
 @app.route('/store', methods=['POST'])
 def create_store():
     request_data = request.get_json()
