@@ -16,16 +16,22 @@ items =[]
 class Item(Resource):  
    # @app.route('/item/<string:name>')
     def get(self, name):
-       item = filter(lambda x: x['name'] == name, items) #we're going to go through each item, execute this function  
-                                                         #and see if the item's name x matches the name which is the parameter
-                                                         #And if it does, then we're going to return it
-       
+        item = next(filter(lambda x: x['name'] == name, items), None) #we're going to go through each item, execute this function  
+                                                                     #and see if the item's name x matches the name which is the parameter
+                                                                     #And if it does, then we're going to return it
+
+                                                                    #None: if the next function doesn't find an item,
+                                                                    #       it will just return none
         # for item in items:
         #     if item['name'] ==name:
         #         return item
-        return {'item' : None}, 404
+        
+        return {'item' : item}, 200 if item else 404
     
     def post(self, name):
+        if next(filter(lambda x: x['name'] == name, items), None):
+            return {'message': "An item with name '{}'is already exists".format(name)}, 400
+        
         item = {'name': name, 'price': 12.00}
         items.append(item)
      
