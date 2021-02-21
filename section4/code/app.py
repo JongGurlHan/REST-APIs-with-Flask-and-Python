@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api
                             #Resource is just a thing that our API can return and create and things like that
 app = Flask(__name__)
-
+app.secret_key = 'jose'
 api = Api(app)
     #Api is just going to allow us to very easily add these Resources to it 
 
