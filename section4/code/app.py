@@ -1,11 +1,27 @@
 from flask import Flask
-from flask_restful import Resource, Api
-                            #Resource is just a thing that our API can return and create and things like that
+from flask_restful import Resource, Api #Resource is just a thing that our API can return and create and things like that
+from flask_jwt import JWT, jwt_required                            
+
+from security import authenticate, identity
+
 app = Flask(__name__)
 app.secret_key = 'jose'
 api = Api(app)
     #Api is just going to allow us to very easily add these Resources to it 
 
+jwt = JWT(app, authenticate, identity)
+#JWT creates a new endpoint that endpoint is /auth,/auth
+# when we call /auth, we send it a username and password 
+# and the JWT extension gets that username and password and sends it over to the authenticate function  
+# We are then going to find the correct user object using that username
+#and we're going to compare its password to the one that we receive through the auth endpoint
+# if they match we're going to return the user and that becomes sort of the identity 
+
+#so what happends next is the auth endpoint returns a JW token
+# Now that JW token in itself doesn't do anything, but we can send it to the next request we make.  
+
+#what JWT does is it calls the identity function. and then it uses the JWT token to get the user ID
+#and with that it gets the correct user for that user ID that the JWT token represents.    
 items =[]
 
 
@@ -15,6 +31,7 @@ items =[]
 #class Item inherits from from the class resource 
 class Item(Resource):  
    # @app.route('/item/<string:name>')
+    @jwt_required
     def get(self, name):
         item = next(filter(lambda x: x['name'] == name, items), None) #we're going to go through each item, execute this function  
                                                                      #and see if the item's name x matches the name which is the parameter
